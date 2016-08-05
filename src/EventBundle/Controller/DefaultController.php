@@ -3,24 +3,22 @@
 namespace EventBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\HttpFoundation\Response;
 
 class DefaultController extends Controller
 {
     public function indexAction($name, $count)
     {
+        //$em = $this->container->get('doctrine')->getManager();
 
-        $data = array(
-            'count' => $count,
-            'firstname' => $name,
-            'ackbar' => 'It\'s a trap!!!!'
-        );
+        $em = $this->gerDoctrine()->getManager();
+        $repo = $em->getRepository('EventBundle:Event');
 
-        $json = json_encode($data);
+        $event = $repo->findOneBy(array(
+            'name' => 'Darth\'s suprise birthday party!'
+        ));
 
-        $response = new Response($json);
-        $response->headers->set('Content-Type', 'application/json');
+        return $this->render('EventBundle:Default:index.html.twig',
+            array('name' => $name, 'count' => $count));
 
-        return $response;
     }
 }
